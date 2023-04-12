@@ -1,19 +1,25 @@
 import './App.css';
-// import { lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AppBar from './components/AppBar/AppBar';
 import HomeView from './views/HomeView/Home';
+import MoviesView from './views/MoviesView/Movies';
+import MovieDetails from './views/MovieDetailsView/MovieDetails';
+import Container from './components/Container/Container';
+import NotFoundView from './views/NotFoundView/NotFound';
 
-// const HomeView = lazy(() =>
-//   import('./views/HomeView/Home' /* webpackChunkName: "home-view"  */),
-// );
 function App() {
   return (
     <div className="App">
       <AppBar />
-      <Routes>
-        <Route path="/" element={<HomeView />} />
-      </Routes>
+      <Container>
+        <Routes>
+          <Route path="/" element={<HomeView />} />
+          <Route path="movies" element={<MoviesView />} />
+          <Route path="movies/:id" element={<MovieDetails />} />
+          <Route path="movies/movies/:id" element={<MovieDetails />} />
+          <Route path="*" element={<NotFoundView />} />
+        </Routes>
+      </Container>
     </div>
   );
 }

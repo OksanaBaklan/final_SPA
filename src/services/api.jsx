@@ -4,19 +4,22 @@ const TRENDING_URL = `${BASE_URL}/trending/all/day?api_key=${API_KEY}&include_ad
 const MOVIE_BY_SEARCH = `${BASE_URL}/search/movie?api_key=${API_KEY}&include_adult=false`;
 const MOVIE_BY_ID = `${BASE_URL}/movie`;
 
-const fetchTrending = (page = 1) => {
+const fetchTrending = async (page = 1) => {
   const url = `${TRENDING_URL}&page=${page}`;
-  return fetch(url).then(response => response.json());
+  const response = await fetch(url);
+  return await response.json();
 };
 
-const fetchMoviesBySearch = (searchQuery, page) => {
+const fetchMoviesBySearch = async (searchQuery, page) => {
   const url = `${MOVIE_BY_SEARCH}&query=${searchQuery}&page=${page}`;
-  return fetch(url).then(response => response.json());
+  const response = await fetch(url);
+  return await response.json();
 };
 
-const fetchFullInfoOfMovie = movieId => {
+const fetchFullInfoOfMovie = async movieId => {
   const url = `${MOVIE_BY_ID}/${movieId}?api_key=${API_KEY}`;
-  return fetch(url).then(response => response.json());
+  const response = await fetch(url);
+  return await response.json();
 };
 
 const fetchfMovieCast = movieId => {

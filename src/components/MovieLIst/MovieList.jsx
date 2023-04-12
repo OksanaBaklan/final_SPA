@@ -1,6 +1,7 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from './MovieList.module.scss';
+import MovieInfo from '../../views/MovieDetailsView/MovieDetails';
 // import placeholder from '../../assets/images/placeholder.png';
 
 export default function GalleryList({ movies, label }) {
@@ -8,22 +9,23 @@ export default function GalleryList({ movies, label }) {
   const imgUrl = 'https://image.tmdb.org/t/p/w500/';
 
   return (
+  <div>
+
     <ul className={styles.list}>
       {movies &&
         movies.map(({ id, name, title, poster_path, vote_average }) => (
           <li key={id} className={styles.item}>
             <Link
               className={styles.link}
-              to={{
-                pathname: `/movies/${id}`,
-                state: {
-                  from: {
-                    location,
-                    // label: 'Back to search',
-                    label: `${label}`,
-                  },
-                },
-              }}
+              to={ `movies/${id}`
+                // state: {
+                //   from: {
+                //     location,
+                //     // label: 'Back to search',
+                //     label: `${label}`,
+                //   },
+                // },
+              }
             >
               <div className={styles.card}>
                 <div className={styles.thumb}>
@@ -55,6 +57,12 @@ export default function GalleryList({ movies, label }) {
           </li>
         ))}
     </ul>
+     <div style={{ marginLeft: "40px" }}>
+ <Routes>
+   <Route path=":id" element={<MovieInfo/>} />
+   </Routes>
+  </div>
+  </div>
   );
 }
 
