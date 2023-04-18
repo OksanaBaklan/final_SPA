@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 
-export default function Searchbar({ onSubmit, prevQuery }) {
+export default function Searchbar({ onChangeQuery, prevQuery }) {
   const [query, setQuery] = useState('');
 
   const handleChange = e => {
@@ -23,7 +23,7 @@ export default function Searchbar({ onSubmit, prevQuery }) {
       return toast.error('type the name of the movie in the search bar');
     }
 
-    onSubmit(query);
+    onChangeQuery(query);
     setQuery('');
   };
 

@@ -9,12 +9,12 @@ function ReviewSubView() {
   const [reviews, setReview] = useState(null);
 
   useEffect(() => {
-    MoviesAPI.fetchfMovieReview(movieId)
+    MoviesAPI.fetchMovieReview(movieId)
       .then(movie => movie.results)
       .then(setReview)
       .catch(error => console.log(error));
   }, [movieId]);
-
+console.log(reviews)
   return (
     <div>
       {/* <h3 className={s.title}>Reviews</h3> */}

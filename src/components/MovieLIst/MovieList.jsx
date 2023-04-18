@@ -1,13 +1,13 @@
 import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from './MovieList.module.scss';
-import MovieInfo from '../../views/MovieDetailsView/MovieDetails';
-// import placeholder from '../../assets/images/placeholder.png';
+import MovieDetails from '../../views/MovieDetailsView/MovieDetails';
+import placeholder from '../../assets/placeholder.png';
 
 export default function GalleryList({ movies, label }) {
   const location = useLocation();
-  const imgUrl = 'https://image.tmdb.org/t/p/w500/';
 
+  const imgUrl = 'https://image.tmdb.org/t/p/w500/';
   return (
   <div>
 
@@ -17,20 +17,20 @@ export default function GalleryList({ movies, label }) {
           <li key={id} className={styles.item}>
             <Link
               className={styles.link}
-              to={ `movies/${id}`
-                // state: {
-                //   from: {
-                //     location,
-                //     // label: 'Back to search',
-                //     label: `${label}`,
-                //   },
-                // },
-              }
+              to={{
+                pathname: `/movies/${id}`,
+                state: {
+                  from: {
+                    location,
+                    label: `${label}`,
+                  },
+                },
+              }}
             >
               <div className={styles.card}>
                 <div className={styles.thumb}>
                   <img
-                    src={imgUrl + poster_path ?? 'placeholder'}
+                    src={poster_path?imgUrl + poster_path:placeholder}
                     alt={name ?? title}
                     className={styles.poster}
                   />
@@ -59,7 +59,7 @@ export default function GalleryList({ movies, label }) {
     </ul>
      <div style={{ marginLeft: "40px" }}>
  <Routes>
-   <Route path=":id" element={<MovieInfo/>} />
+   <Route path=":id" element={<MovieDetails/>} />
    </Routes>
   </div>
   </div>
@@ -80,13 +80,3 @@ GalleryList.prototype = {
   location: PropTypes.object.isRequired,
 };
 
-// <Link
-//   to={{
-//     pathname: `/movies/${movie.id}`,
-//     state: {
-//       from: location.pathname === '/' ? '/' : '/movies' + location.search,
-//     },
-//   }}
-// >
-//   <h3>{movie.original_title}</h3>
-// </Link>;

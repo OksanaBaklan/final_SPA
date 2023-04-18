@@ -1,62 +1,136 @@
 import s from './MovieDetailsView.module.scss';
-import {useParams,Routes,Route, NavLink} from 'react-router-dom'
-import { useState,useEffect } from 'react';
+import axios from 'axios';
+import {useParams,NavLink,useLocation, Outlet} from 'react-router-dom'
+import { useState,useEffect, useContext } from 'react';
 import * as MoviesAPI from '../../services/api';
-import CastSubView from '../../components/CastSubView/CastSubView';
-import ReviewSubView from '../../components/ReviewSubView/ReviewSubview'
+import MovieVideo from '../../components/MovieVideo/MovieVideo'
+import QueueBtn from '../../components/Buttons/QueueBtn/QueueBtn'
+import { GlobalContext } from '../../context/GlobalState';
 
 export default function MovieDetails (){
-    const {id} = useParams();
-// console.log(id)
-const [movie, setMovie] = useState(null);
+
+const {id} = useParams();
+const [movies, setMovies] = useState(null);
+
+const mediaType = 'movie';
+
+
+
 useEffect(()=>{
     MoviesAPI.fetchFullInfoOfMovie(id)
-    .then(setMovie)
+    .then(setMovies)
     .catch(error => console.log(error));
-},[id, movie])
-// const { url, path } = useMatch();
-// console.log(url)
+},[id, movies])
+
+
+const {pathname} = useLocation();
+const Image_path = 'https://image.tmdb.org/t/p/original/'
+
+
+// const fetchMovie = async (id) => {
+//   // const {data} = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key='3d673b2d8e40eafc68577fae5a6a1f4b'&append_to_response=videos,images`)
+//   const res = await axios.get(`https://api.themoviedb.org/3/movie/${id}`, {
+//     params: {
+//         api_key: '3d673b2d8e40eafc68577fae5a6a1f4b',
+//         append_to_response: "videos"
+//     }
+// })
+
+// if (res.videos && res.videos.results) {
+//     const trailer = res.data.videos.results.find(video =>video.name==='Official Trailer')
+//     setTrailer(trailer ?trailer: res.videos.results[0])
+// }
+// console.log(res.data.videos.results.find(video =>video.name==='Official Trailer').key)
+
+// // setMovie(res)
+// }
+
+
+// useEffect( ()=>{
+//   fetchMovie(id)
+//   setPlaying(false)
+//   window.scrollTo(0, 0)
+// },[id] )
+
+
+const { addMovieToWatchlist, addMovieToWatched, watchlist, watched } =
+useContext(GlobalContext);
+
+let storedMovie = watchlist.find((o) => o.id === movies.id);
+let storedMovieWatched = watched.find((o) => o.id === movies.id);
+
+const watchlistDisabled = storedMovie
+  ? true
+  : storedMovieWatched
+  ? true
+  : false;
+
+const watchedDisabled = storedMovieWatched ? true : false;
 
     return(
         <div>
-             {movie  ? (
-        <>
+             {movies && movies.status === 'Released' ? (
+        <div 
+        //  style={{backgroundImage:`url(${Image_path}${movies.backdrop_path})`}}
+         >
 
-          <div className={s.card}>
+          <div   className={s.card}>
             <div className={s.cardThumb}>
               <img
                 className={s.cardThumbImage}
-                src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
-                alt={movie.title}
+                src={`https://image.tmdb.org/t/p/original/${movies.poster_path}`}
+                alt={movies.title}
               />
             </div>
             <div className={s.cardDesc}>
-              <h2 className={s.title}>{`${movie.title} (${
-                movie.release_date.split('-')[0]
-              })`}</h2>
-              <p className={s.text}>{`User Score: ${movie.vote_average}`}</p>
+              <h2 className={s.title}>{`${movies.title} 
+              (${
+                movies.release_date.split('-')[0]
+              })
+              `}</h2>
+              <p className={s.text}>{`User Score: ${movies.vote_average}`}</p>
               <h3 className={s.subTitle}>Overeview</h3>
-              <p className={s.text}>{movie.overview}</p>
+              <p className={s.text}>{movies.overview}</p>
               <h3 className={s.subTitle}>Genres</h3>
               <p className={s.text}>
-                {movie.genres.map(obj => Object.values(obj)[1]).join(' ')}
+                {movies.genres.map(obj => Object.values(obj)[1]).join(' ')}
               </p>
+              {/* <QueueBtn id={id}/> */}
+              <MovieVideo mediaType={mediaType}/>
+
+
+        <div className="controls">
+          <button
+            className="btn"
+            disabled={watchlistDisabled}
+            onClick={() => addMovieToWatchlist(movies.id)}
+          >
+            Add to Watchlist
+          </button>
+
+          <button
+            className="btn"
+            disabled={watchedDisabled}
+            onClick={() => addMovieToWatched(movies.id)}
+          >
+            Add to Watched
+          </button>
+        </div>
+             <button    className={s.Button} >Watch Trailer</button>
+
             </div>
           </div>
           <div>
+
+
             <hr />
             <h3 className={s.subTitle}>Additional information</h3>
             <ul className="list">
               <li>
-                <NavLink
+              <NavLink
                   className="link"
                   activeClassName="activeLink"
-                  to="/cast" 
-                //   to={{
-                //     pathname: `${url}/cast`,
-                //     // state: { from: { location } },
-                //     // state: { ...location.state },
-                //   }}
+                  to={`/movies/${id}/cast`}
                 >
                   Cast
                 </NavLink>
@@ -65,37 +139,29 @@ useEffect(()=>{
                 <NavLink
                   className="link"
                   activeClassName="activeLink"
-                  to={`/reviews`}
-    
+                  to={`/movies/${id}/cast/reviews`}
                 >
                   Reviews
                 </NavLink>
               </li>
             </ul>
+                  <Outlet/>
 
             <hr />
           </div>
+{/* 
           <div>
+            <Suspense fallback={<h1>Loading...</h1>}>
             <Routes>
-{/* <Route  path={`${path}/cast`} element={<CastSubView/>} />
-<Route  path={`${path}/reviews`} element={<ReviewSubView/>} /> */}
 
+             <Route path={pathname}>
+                <Route path={`cast`} element = { <CastSubView />}/>
+                <Route path={`reviews`} element = { <ReviewSubView />}/>
+              </Route> 
             </Routes>
-          </div>
-          <div>
-            {/* <Suspense fallback={<h1>Loading...</h1>}> */}
-              <Routes>
-                <Route path={`/cast`} exact>
-                  {/* <CastSubView /> */}
-                </Route>
-
-                <Route path={`/reviews`} exact>
-                  {/* <ReviewSubView /> */}
-                </Route>
-              </Routes>
-            {/* </Suspense> */}
-          </div>
-        </>
+          </Suspense>
+          </div> */}
+        </div>
       ) : (
         <h1 className={s.message}>
           The resource you requested could not be found!

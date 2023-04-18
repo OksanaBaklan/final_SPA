@@ -6,10 +6,10 @@
   flex-wrap: wrap;
   margin-left: -20px;
   margin-top: -20px;
-  padding: 20px 0;
+  padding: 5px 5px;
 }
 .item {
-  // flex-basis: calc(100% / 2 - 20px);
+  width: 25%;
   margin-left: 20px;
   margin-top: 20px;
   //   opacity: 1;
@@ -49,24 +49,24 @@
   border-radius: 5px;
 }
 
-// .thumb {
-//   height: 250px;
+.thumb {
+  height: 250px;
 
-//   @media screen and (min-width: 370px) and (max-width: 767px) {
-//     height: 300px;
-//   }
+  @media screen and (min-width: 370px) and (max-width: 767px) {
+    height: 300px;
+  }
 
-//   @media screen and (min-width: 768px) and (max-width: 1169px) {
-//     height: 350px;
-//   }
+  @media screen and (min-width: 768px) and (max-width: 1169px) {
+    height: 350px;
+  }
 
-//   @media screen and (min-width: 1170px) {
-//     height: 400px;
-//   }
-// }
+  @media screen and (min-width: 1170px) {
+    height: 400px;
+  }
+}
 
 .poster {
-  // width: 100%;
+  width: 100%;
   height: 100%;
   border-radius: 5px 5px 0 0;
 

@@ -1,20 +1,21 @@
 import s from './CastSubView.module.scss';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Outlet } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as MoviesAPI from '../../services/api';
+import placeholder from '../../assets/placeholder.png'
 
 export default function CastSubView() {
-  const { movieId } = useParams();
+  const { id } = useParams();
   const [cast, setCast] = useState(null);
-
+console.log(id)
   useEffect(() => {
-    MoviesAPI.fetchfMovieCast(movieId)
+    MoviesAPI.fetchMovieCast(id)
       .then(movie => movie.cast)
       .then(setCast)
       .catch(error => console.log(error));
-  }, [movieId]);
-
+  }, [id]);
+const imgUrl = 'https://image.tmdb.org/t/p/original/'
   return (
     <div>
       {/* <h3 className={s.SupTitle}>Cast</h3> */}
@@ -22,33 +23,42 @@ export default function CastSubView() {
         <ul className={s.CastGallery}>
           {cast.map(({ cast_id, character, name, profile_path }) => {
             return (
+              <div>
+
               <li key={cast_id} className={s.GalleryItem}>
-                {profile_path && (
+                { (
                   <img
-                    src={
-                      // author_details.avatar_path.slice(1) ||
-                      `https://image.tmdb.org/t/p/original/${profile_path}`
+                    src={profile_path
+                      ?imgUrl+profile_path
+                      :placeholder
                     }
                     alt={name}
-                    // style={{ width: '80px' }}
                     className={s.GalleryItemImage}
                   />
                 )}
                 <h4 className={s.Title}>Actor: {name.toUpperCase()}</h4>
                 <p className={s.SubTitle}> Character: {character}</p>
               </li>
+        
+              </div>
+
             );
           })}
         </ul>
-      ) : (
+        
+      )
+       : (
         <h4>Nothing Found</h4>
-      )}
+      )
+
+      }
+            <Outlet/>
     </div>
   );
 }
 
 CastSubView.prototype = {
-  movieId: PropTypes.string,
+  id: PropTypes.string,
   cast: PropTypes.shape({
     cast_id: PropTypes.number.isRequired,
     character: PropTypes.string,

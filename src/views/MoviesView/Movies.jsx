@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Searchbar from '../../components/Searchbar/Searchbar';
+import SearchBar from '../../components/Searchbar/Searchbar';
 import MovieSearchLIst from '../../components/MovieLIst/MovieList';
-import LoadMoreButon from '../../components/Buttons/LoadMoreBtn/LoadMoreBtn';
+import LoadMoreButton from '../../components/Buttons/LoadMoreBtn/LoadMoreBtn';
 import scrollContent from '../../utils/utils';
 import * as MoviesAPI from '../../services/api';
 
 const Movies = () => {
-//   const history = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
+  console.log(location.search)
 
   const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
@@ -22,8 +23,9 @@ const Movies = () => {
       return;
     }
     getMovies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+    console.log(query)
+  }, [ query]);
+
 
   useEffect(() => {
     if (location.search === '') {
@@ -32,7 +34,7 @@ const Movies = () => {
     const getLocationSearch = new URLSearchParams(location.search).get(
       'search',
     );
-
+console.log(location.search)
     setQuery(getLocationSearch);
   }, [location.search]);
 
@@ -41,7 +43,10 @@ const Movies = () => {
     setMovies([]);
     setPage(1);
     setError(null);
-    // history.push({ ...location, search: `search=${query}` });
+    navigate({
+      pathname: '/movies',
+      search:  `?search=${query}`,
+    });
   };
 
   const getMovies = () => {
@@ -60,15 +65,17 @@ const Movies = () => {
         }
       })
       .catch(setError);
+  
+
   };
 
   return (
     <>
-      <Searchbar onSubmit={onChangeQuery} prevQuery={query} />
-      {error && <h1>Something went wrong! {error.message}</h1>}
+      <SearchBar onChangeQuery={onChangeQuery} prevQuery={query} />
+      {error && <h1>Something went wrong! </h1>}
 
       <MovieSearchLIst movies={movies} label="Back to search" />
-      {movies && movies.length > 0 && <LoadMoreButon onClick={getMovies} />}
+      {movies && movies.length > 0 && <LoadMoreButton onClick={getMovies} />}
 
       <ToastContainer autoClose={3000} theme={'colored'} />
     </>

@@ -4,7 +4,7 @@ import s from './Navigation.module.scss';
 const Navigation = () => (
   <header>
     <nav className={s.nav}>
-    <NavLink  to="/" className={s.link} >
+    <NavLink to="/" className={s.link} >
         Home
       </NavLink>
       <NavLink to="/movies" className={s.link} >
